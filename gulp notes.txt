@@ -1,0 +1,252 @@
+Grunt /gulp 
+----------------------
+1)They are Javascript task Runner.It is used to Automate the task.
+2)it is opensource and available on GitHub.
+3)we have different types of plugins available we have add them.
+4)it is also build on node.js
+
+
+Task means :-
+i)coping data from one file to another.
+ii)compile or debuging a file.
+iii)concating 2 or more files.
+iv)adding header or footer to all the files
+v)adding copyright to all the files.
+vi)it is also used to minification of files.(it will compress the files by removing unused lines.the file size will be reduced.(html,css,javascript)
+
+--------------------------------------------------------------------------------------------------  
+*To minify a file.In this we will have a source folder and a distination folder.
+In the source folder we will have the original file and the distination folder we will have the minified file.
+-------------------------------------------------------------------------------------------------------------------------------------------
+Example 1:-
+-----------------------
+var gulp = require('gulp'),
+minifyHtml = require("gulp-minify-html");
+
+gulp.task('minify-html',function() 
+{
+gulp.src('./Html/*.html') //path of your file
+.pipe(minifyHtml())
+.pipe(gulp.dest('./dist/minified'));
+});
+-------------------------------------------------------
+step 1:create a package (npm init)
+step 2:npm install gulp-cli -g
+step 3:npm install gulp (Local gulp) 
+step 4:npm install gulp-minify-html --save-dev
+step 5:create a gulpfile.js
+step 6:create source folder and file( ./Html/first.html)
+step 7:gulp minify-html
+----------------------------------------------------------
+Example 2:-
+-----------------------
+var gulp = require('gulp'),
+minifyCss = require("gulp-minify-css");
+
+gulp.task('minify-css',function() 
+{
+gulp.src('./css/*.css') //path of your file
+.pipe(minifyCss())
+.pipe(gulp.dest('./dist/minified'));
+});
+--------------------------------------------------------------------------
+plug-in :- npm install gulp-minify-css --save-dev
+to run:- gulp minify-css
+--------------------------------------------------------------------------
+example 3:-
+------------------------
+var gulp = require('gulp'),
+uglify = require("gulp-uglify");
+
+gulp.task('minify-js',function() 
+{
+gulp.src('./javascript/*.js') //path of your file
+.pipe(uglify())
+.pipe(gulp.dest('./dist/minified'));
+});
+-------------------------------------------------------------
+npm install gulp-uglify --save-dev
+--------------------------------------------------------
+to run :- gulp minify-js
+----------------------------------------------------------
+javascript file
+-----------------------
+for(var i = 0; i < 5; i++) 
+{
+  (function() {    var j = i;    setTimeout( function() { console.log(j); 
+}, 500*i);  })  ();
+
+}
+----------------------------------------------------------
+Example 4:- (compiling of javascript)
+------------------------------------------------
+var gulp = require('gulp'),
+jshint = require("gulp-jshint");
+
+gulp.task('jsLint',function() 
+{
+gulp.src('./javascript/*.js') //path of your file
+.pipe(jshint())
+.pipe(jshint.reporter());
+});
+------------------------------------------------------
+plugin :- npm install gulp-jshint --save-dev
+npm install jshint
+------------------------------------------
+to run:- gulp jsLint
+------------------------------------------------------------
+var buffer1 = new Buffer('ABC'); 
+//copy a buffer 
+var buffer2 = new Buffer(2); 
+buffer1.copy(buffer2); 
+console.log("buffer2 content: " + buffer2.toString()); 
+-----------------------------------------------------------------
+Example -5 
+----------------------------------------------------
+concat two or more javascript files.
+-----------------------------------------------------
+var gulp = require('gulp'),
+concat = require("gulp-concat");
+
+gulp.task('concat',function() 
+{
+gulp.src('./javascript/*.js') //keep 2 or more files
+.pipe(concat('suvajeet.js')) //concat 2 or more files and name it as .....
+.pipe(gulp.dest('./dist/result'));//stored into this folder
+});
+---------------------------------------------------------------
+plugin :- npm install gulp-concat --save-dev
+-----------------------------------------------------
+to run:- gulp concat
+-------------------------------------------------
+First.js
+--------------
+var buffer1 = new Buffer('ABC'); 
+//copy a buffer 
+var buffer2 = new Buffer(2); 
+buffer1.copy(buffer2); 
+console.log("buffer2 content: " + buffer2.toString()); 
+-----------------------------
+Second.js
+--------------------
+var buffer1 = new Buffer('ABC'); 
+var buffer2 = new Buffer('ABCDEF'); 
+var result = buffer1.compare(buffer2);  
+if(result < 0) { 
+   console.log(buffer1 +" comes before " + buffer2); 
+}else if(result == 0){ 
+   console.log(buffer1 +" is same as " + buffer2); 
+}else { 
+   console.log(buffer1 +" comes after " + buffer2); 
+} 
+------------------------------------------
+Third.js
+--------------------
+var buffer1 = new Buffer('This is Node js Tutorials '); 
+var buffer2 = new Buffer('Node is a server side program'); 
+var buffer3 = Buffer.concat([buffer1,buffer2]); 
+console.log("buffer3 content: " + buffer3.toString()); 
+-------------------------------------------------------
+Example 6:-
+---------------------
+var gulp = require('gulp'),
+concat = require("gulp-concat");
+header=require("gulp-header");
+
+var getCopyright=function()
+{
+return fs.readFileSync('copyright');
+};
+gulp.task('concat-copyright',function()
+{
+gulp.src('./javascript/*.js')
+.pipe(concat('concat-copyright.js')) //concat ,add header and give the name as .....
+.pipe(gulp.dest('./dist/result'));
+});
+----------------------------------------------------------------------------
+npm install gulp-header --save-dev
+-------------------------------------------------------------
+gulp concat-copyright
+----------------------------------------------
+Example -7
+---------------------
+var gulp = require('gulp');
+concat=require('gulp-concat'),
+imagemin=require('gulp-imagemin'),
+jshint=require('gulp-jshint'),
+notify=require('gulp-notify'),
+plumber=require('gulp-plumber'),//handle error 
+uglify=require('gulp-uglify'),
+stripDebug=require('gulp-strip-debug'),
+liveReload=require('gulp-livereload'),
+styleInject=require('gulp-style-inject'); 
+
+onError = function(err)
+{
+console.log(err);
+}
+
+gulp.task('default',['copyfiles','images','jshint','scripts','styles','watch']);
+gulp.task('copyfiles',function()
+{
+gulp.src('./src/**/*.{txt,doc}')
+.pipe(gulp.dest('./dest'));
+});
+
+gulp.task('images',function()
+{
+gulp.src('./src/myfiles/*')
+.pipe(plumber({errorHandler : onError}))
+.pipe(imagemin())
+.pipe(gulp.dest('./dest'))
+.pipe(notify({message :'Your Image has been copied'}));
+});
+
+gulp.task('jshint',function()
+{
+gulp.src('./javascript/*.js')
+.pipe(plumber({errorHandler : onError}))
+.pipe(jshint())
+.pipe(jshint.reporter('default'))
+.pipe(notify({message:'File error check is completed'}));
+});
+
+gulp.task('scripts',function()
+{
+return gulp.src('./src/scripts/*.js')
+.pipe(plumber({errorHandle:onError}))
+.pipe(concat('app.min.js'))
+.pipe(stripDebug())
+.pipe(uglify())
+.pipe(gulp.dest('./js/'))
+.pipe(notify({message:'Script task complete'}));
+});
+
+//This will handle watching and liveReload server to refresh things
+
+gulp.task('watch',function()
+{
+    gulp.watch('./src/scripts/**/*.js',['jshint','scripts']);
+    gulp.watch('./src/images/**/*',['images']);
+    var server =liveReload(); //create a liveReload server
+    gulp.watch(['./src/**']).on('changed',function(file)
+    {
+        server.changed(file.path);
+    })
+});
+
+//add the css style to html page
+gulp.task('styles',function()
+{
+glup.src('./src/*.html')
+.pipe(styleInject())
+.pipe(gulp.dest('./app'));
+});
+
+
+-----------------------------
+watch :-
+1) it will keep track of all the files changes.
+2)it will keep track of all the files added or unlink(deleted)
+
+ 
